@@ -23,7 +23,7 @@ public class ShipService {
 
     public ResponseEntity<?> addShip(Ship ship) {
         if (ship.getName() == null || ship.getPlanet() == null || ship.getShipType() == null || ship.getProdDate() == null ||
-            ship.getSpeed() == null || ship.getCrewSize() == null) {
+                ship.getSpeed() == null || ship.getCrewSize() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (ship.getName().length() >= 50 || ship.getPlanet().length() >= 50) {
@@ -34,7 +34,7 @@ public class ShipService {
         }
         double scale = Math.pow(10, 2);
         double speed = Math.round(ship.getSpeed() * scale) / scale;
-        if (speed <0.01 || speed > 0.99 || ship.getCrewSize() <= 0 || ship.getCrewSize() > 9999) {
+        if (speed < 0.01 || speed > 0.99 || ship.getCrewSize() <= 0 || ship.getCrewSize() > 9999) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (ship.getProdDate().getTime() < 0) {
@@ -61,7 +61,7 @@ public class ShipService {
         newShip.setCrewSize(ship.getCrewSize());
         newShip.setRating(rating);
         repo.save(newShip);
-        return new ResponseEntity<>(newShip,HttpStatus.OK);
+        return new ResponseEntity<>(newShip, HttpStatus.OK);
     }
 
     public ResponseEntity<?> updateShip(Ship newShip, long updateShipID) {
@@ -74,7 +74,7 @@ public class ShipService {
         }
         if (newShip.getName() == null && newShip.getPlanet() == null && newShip.getShipType() == null && newShip.getProdDate() == null &&
                 newShip.getSpeed() == null && newShip.getCrewSize() == null) {
-            return new ResponseEntity<>(existShip,HttpStatus.OK);
+            return new ResponseEntity<>(existShip, HttpStatus.OK);
         }
         if (newShip.getName() != null) {
             if (newShip.getName().isEmpty()) {
@@ -95,7 +95,7 @@ public class ShipService {
         }
         if (newShip.getPlanet() != null) {
             if (newShip.getPlanet().length() >= 50) {
-                return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
                 existShip.setPlanet(newShip.getPlanet());
             }
@@ -110,11 +110,11 @@ public class ShipService {
         double scale = Math.pow(10, 2);
         if (newShip.getSpeed() != null) {
             double speed = Math.round(newShip.getSpeed() * scale) / scale;
-                if (speed < 0.01 || speed > 0.99) {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                } else {
-                    existShip.setSpeed(speed);
-                }
+            if (speed < 0.01 || speed > 0.99) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                existShip.setSpeed(speed);
+            }
         }
         if (newShip.getCrewSize() != null) {
             if (newShip.getCrewSize() <= 0 || newShip.getCrewSize() > 9999) {
@@ -149,14 +149,14 @@ public class ShipService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Ship existShip = repo.findById(deleteShipID);
-        if (existShip==null) {
+        if (existShip == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         repo.delete(existShip);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getShipByID(Long shipID) {
+    public ResponseEntity<?> getShipByID(long shipID) {
         String valid = String.valueOf(shipID);
         if (shipID == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -164,11 +164,11 @@ public class ShipService {
         if (!valid.matches("[0-9]+")) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<Ship> existShip = repo.findById(shipID);
-        if (existShip.isEmpty()) {
+        Ship existShip = repo.findById(shipID);
+        if (existShip == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(existShip.get(), HttpStatus.OK);
+        return new ResponseEntity<>(existShip, HttpStatus.OK);
     }
 
 
