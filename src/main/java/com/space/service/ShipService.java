@@ -45,8 +45,8 @@ public class ShipService {
         if (prodYear < 2800 || prodYear > 3019) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<Ship> existShip = repo.findByName(ship.getName());
-        if (!existShip.isEmpty()) {
+        Ship existShip = repo.findByName(ship.getName());
+        if (existShip != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         double k = ship.isUsed() ? 0.5 : 1;
@@ -68,13 +68,13 @@ public class ShipService {
         if (updateShipID == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<Ship> existShip = repo.findById(updateShipID);
-        if (existShip.isEmpty()) {
-            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        Ship existShip = repo.findById(updateShipID);
+        if (existShip == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (newShip.getName() == null && newShip.getPlanet() == null && newShip.getShipType() == null && newShip.getProdDate() == null &&
                 newShip.getSpeed() == null && newShip.getCrewSize() == null) {
-            return new ResponseEntity<>(existShip.get(),HttpStatus.OK);
+            return new ResponseEntity<>(existShip,HttpStatus.OK);
         }
         if (newShip.getName() != null) {
             if (newShip.getName().isEmpty()) {
@@ -90,39 +90,37 @@ public class ShipService {
             if (newShip.getName().length() >= 50) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                existShip.get().setName(newShip.getName());
+                existShip.setName(newShip.getName());
             }
         }
         if (newShip.getPlanet() != null) {
             if (newShip.getPlanet().length() >= 50) {
                 return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
             } else {
-                existShip.get().setPlanet(newShip.getPlanet());
+                existShip.setPlanet(newShip.getPlanet());
             }
         }
         if (newShip.getShipType() != null) {
-            existShip.get().setShipType(newShip.getShipType());
+            existShip.setShipType(newShip.getShipType());
         }
-        existShip.get().setUsed(newShip.isUsed());
+        existShip.setUsed(newShip.isUsed());
         if (newShip.getProdDate() != null) {
-            existShip.get().setProdDate(newShip.getProdDate());
+            existShip.setProdDate(newShip.getProdDate());
         }
         double scale = Math.pow(10, 2);
         if (newShip.getSpeed() != null) {
-            Double speed = Math.round(newShip.getSpeed() * scale) / scale;
-            if (speed != null) {
+            double speed = Math.round(newShip.getSpeed() * scale) / scale;
                 if (speed < 0.01 || speed > 0.99) {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 } else {
-                    existShip.get().setSpeed(speed);
+                    existShip.setSpeed(speed);
                 }
-            }
         }
         if (newShip.getCrewSize() != null) {
             if (newShip.getCrewSize() <= 0 || newShip.getCrewSize() > 9999) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                existShip.get().setCrewSize(newShip.getCrewSize());
+                existShip.setCrewSize(newShip.getCrewSize());
             }
         }
         if (newShip.getProdDate() != null) {
@@ -133,12 +131,12 @@ public class ShipService {
             }
         }
 
-        LocalDate localDatedate = existShip.get().getProdDate().toLocalDate();
-        Double k = existShip.get().isUsed() ? 0.5 : 1;
-        Double rating = Math.round(((80 * existShip.get().getSpeed() * k) / (3019 - localDatedate.getYear() + 1)) * scale) / scale;
-        existShip.get().setRating(rating);
-        repo.save(existShip.get());
-        return new ResponseEntity<Ship>(existShip.get(), HttpStatus.OK);
+        LocalDate localDatedate = existShip.getProdDate().toLocalDate();
+        double k = existShip.isUsed() ? 0.5 : 1;
+        double rating = Math.round(((80 * existShip.getSpeed() * k) / (3019 - localDatedate.getYear() + 1)) * scale) / scale;
+        existShip.setRating(rating);
+        repo.save(existShip);
+        return new ResponseEntity<>(existShip, HttpStatus.OK);
 
     }
 
@@ -150,11 +148,11 @@ public class ShipService {
         if (!valid.matches("\\d+")) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<Ship> existShip = repo.findById(deleteShipID);
-        if (existShip.isEmpty()) {
+        Ship existShip = repo.findById(deleteShipID);
+        if (existShip==null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        repo.delete(existShip.get());
+        repo.delete(existShip);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -170,7 +168,7 @@ public class ShipService {
         if (existShip.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Ship>(existShip.get(), HttpStatus.OK);
+        return new ResponseEntity<>(existShip.get(), HttpStatus.OK);
     }
 
 

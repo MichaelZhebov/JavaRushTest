@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -82,20 +81,20 @@ public class ShipController {
         }
         switch (order.getFieldName()) {
             case "id":
-                Comparator<Ship> byId = (s1, s2) -> s1.getId().compareTo(s2.getId());
-                Collections.sort(ships, byId);
+                Comparator<Ship> byId = Comparator.comparing(Ship::getId);
+                ships.sort(byId);
                 break;
             case "speed":
-                Comparator<Ship> bySpeed = (s1, s2) -> s1.getSpeed().compareTo(s2.getSpeed());
-                Collections.sort(ships, bySpeed);
+                Comparator<Ship> bySpeed = Comparator.comparing(Ship::getSpeed);
+                ships.sort(bySpeed);
                 break;
             case "prodDate":
-                Comparator<Ship> byDate = (s1, s2) -> s1.getProdDate().compareTo(s2.getProdDate());
-                Collections.sort(ships, byDate);
+                Comparator<Ship> byDate = Comparator.comparing(Ship::getProdDate);
+                ships.sort(byDate);
                 break;
             case "rating":
-                Comparator<Ship> byRating = (s1, s2) -> s1.getRating().compareTo(s2.getRating());
-                Collections.sort(ships, byRating);
+                Comparator<Ship> byRating = Comparator.comparing(Ship::getRating);
+                ships.sort(byRating);
                 break;
             default:
                 break;

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface ShipRepository extends JpaRepository<Ship, Long> {
 
-    Optional<Ship> findByName(String name);
+    Ship findByName(String name);
+
+    Ship findById(long id);
 
 }
